@@ -1,5 +1,7 @@
-from gcn.inits import *
-import tensorflow as tf
+from inits import *
+import tensorflow as tflow
+tf = tflow.compat.v1
+tf.disable_eager_execution()
 
 flags = tf.app.flags
 FLAGS = flags.FLAGS

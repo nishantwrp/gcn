@@ -2,10 +2,12 @@ from __future__ import division
 from __future__ import print_function
 
 import time
-import tensorflow as tf
+import tensorflow as tflow
+tf = tflow.compat.v1
+tf.disable_eager_execution()
 
-from gcn.utils import *
-from gcn.models import GCN, MLP
+from utils import *
+from models import GCN, MLP
 
 # Set random seed
 seed = 123

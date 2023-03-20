@@ -1,4 +1,6 @@
-import tensorflow as tf
+import tensorflow as tflow
+tf = tflow.compat.v1
+tf.disable_eager_execution()
 import numpy as np
 
 

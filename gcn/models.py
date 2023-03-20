@@ -1,5 +1,9 @@
-from gcn.layers import *
-from gcn.metrics import *
+from layers import *
+from metrics import *
+
+import tensorflow as tflow
+tf = tflow.compat.v1
+tf.disable_eager_execution()
 
 flags = tf.app.flags
 FLAGS = flags.FLAGS
