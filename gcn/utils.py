@@ -134,6 +134,26 @@ def preprocess_adj(adj):
     adj_normalized = normalize_adj(adj + sp.eye(adj.shape[0]))
     return sparse_to_tuple(adj_normalized)
 
+def normalize_adj_spl(adj):
+    """Symmetrically normalize adjacency matrix."""
+    rowsum = np.array(adj.sum(1))
+    d_inv_sqrt = np.power(rowsum, -0.5).flatten()
+    d_inv_sqrt[np.isinf(d_inv_sqrt)] = 0.
+    d_mat_inv_sqrt = sp.diags(d_inv_sqrt)
+    return adj.dot(d_mat_inv_sqrt).transpose().dot(d_mat_inv_sqrt).tocoo()
+
+def mat_mul(matrix, n):
+    res = matrix
+    for _ in range(n-1):
+        res = res.dot(matrix)
+    return res
+
+def preprocess_for_exp1(adj, n):
+    adj_plus_itself = sp.coo_matrix(adj + sp.eye(adj.shape[0]))
+    adj_n = mat_mul(adj_plus_itself, n)
+    adj_final = adj_n.power(0)
+    adj_normalized = normalize_adj_spl(adj_final)
+    return sparse_to_tuple(adj_normalized)
 
 def construct_feed_dict(features, support, labels, labels_mask, placeholders):
     """Construct feed dictionary."""
