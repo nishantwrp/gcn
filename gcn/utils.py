@@ -155,6 +155,12 @@ def preprocess_for_exp1(adj, n):
     adj_normalized = normalize_adj_spl(adj_final)
     return sparse_to_tuple(adj_normalized)
 
+def preprocess_for_exp2(adj, n):
+    adj_plus_itself = sp.coo_matrix(adj + sp.eye(adj.shape[0]))
+    adj_n = mat_mul(adj_plus_itself, n)
+    adj_normalized = normalize_adj_spl(adj_n)
+    return sparse_to_tuple(adj_normalized)
+
 def construct_feed_dict(features, support, labels, labels_mask, placeholders):
     """Construct feed dictionary."""
     feed_dict = dict()

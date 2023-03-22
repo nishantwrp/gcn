@@ -18,7 +18,7 @@ tf.set_random_seed(seed)
 flags = tf.app.flags
 FLAGS = flags.FLAGS
 flags.DEFINE_string('dataset', 'cora', 'Dataset string.')  # 'cora', 'citeseer', 'pubmed'
-flags.DEFINE_string('model', 'gcn', 'Model string.')  # 'gcn', 'gcn_cheby', 'dense', 'exp1'
+flags.DEFINE_string('model', 'gcn', 'Model string.')  # 'gcn', 'gcn_cheby', 'dense', 'exp1', 'exp2'
 flags.DEFINE_float('learning_rate', 0.01, 'Initial learning rate.')
 flags.DEFINE_integer('epochs', 200, 'Number of epochs to train.')
 flags.DEFINE_integer('hidden1', 16, 'Number of units in hidden layer 1.')
@@ -48,6 +48,10 @@ elif FLAGS.model == 'dense':
     model_func = MLP
 elif FLAGS.model == 'exp1':
     support = [preprocess_for_exp1(adj, FLAGS.l1n), preprocess_for_exp1(adj, FLAGS.l2n)]
+    num_supports = 2
+    model_func = EXP1
+elif FLAGS.model == 'exp2':
+    support = [preprocess_for_exp2(adj, FLAGS.l1n), preprocess_for_exp2(adj, FLAGS.l2n)]
     num_supports = 2
     model_func = EXP1
 else:
