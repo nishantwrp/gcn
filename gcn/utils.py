@@ -172,6 +172,26 @@ def preprocess_for_exp3(adj, n):
     adj_normalized = normalize_adj_spl(adj_final)
     return sparse_to_tuple(adj_normalized)
 
+def preprocess_for_exp4(adj, n, weights):
+    adj_plus_itself = sp.coo_matrix(adj + sp.eye(adj.shape[0]))
+
+    adj_final = sp.coo_matrix(sp.eye(adj.shape[0]))
+    adj_final *= weights[0]
+
+    adj_visited = sp.coo_matrix(sp.eye(adj.shape[0]))
+    adj_curr = sp.coo_matrix(sp.eye(adj.shape[0]))
+
+    for i in range(n):
+        adj_curr = adj_curr.dot(adj_plus_itself)
+        adj_curr = adj_curr.power(0)
+
+        adj_new = adj_curr - adj_visited
+        adj_final += weights[i+1]*adj_new
+        adj_visited += adj_new
+
+    adj_normalized = normalize_adj_spl(adj_final)
+    return sparse_to_tuple(adj_normalized)
+
 def construct_feed_dict(features, support, labels, labels_mask, placeholders):
     """Construct feed dictionary."""
     feed_dict = dict()
