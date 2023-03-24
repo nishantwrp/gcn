@@ -5,6 +5,9 @@ import scipy.sparse as sp
 from scipy.sparse.linalg import eigsh
 import sys
 
+import tensorflow as tflow
+tf = tflow.compat.v1
+tf.disable_eager_execution()
 
 def parse_index_file(filename):
     """Parse index file."""
@@ -188,6 +191,34 @@ def preprocess_for_exp4(adj, n, weights):
         adj_new = adj_curr - adj_visited
         adj_final += weights[i+1]*adj_new
         adj_visited += adj_new
+
+    adj_normalized = normalize_adj_spl(adj_final)
+    return sparse_to_tuple(adj_normalized)
+
+def preprocess_for_exp5(adj, n):
+    adj_plus_itself = sp.coo_matrix(adj + sp.eye(adj.shape[0]))
+
+    adj_visited = sp.coo_matrix(sp.eye(adj.shape[0]))
+    adj_curr = sp.coo_matrix(sp.eye(adj.shape[0]))
+
+    new_adjs = [adj_curr]
+
+    for i in range(n):
+        adj_curr = adj_curr.dot(adj_plus_itself)
+        adj_curr = adj_curr.power(0)
+
+        adj_new = adj_curr - adj_visited
+        new_adjs.append(adj_new)
+        adj_visited += adj_new
+
+    return new_adjs
+
+def calculate_for_exp5(new_adjs, weights):
+    adj_final = new_adjs[0]
+    adj_final *= weights[0]
+
+    for i in range(1, len(new_adjs)):
+        adj_final += weights[i]*new_adjs[i]
 
     adj_normalized = normalize_adj_spl(adj_final)
     return sparse_to_tuple(adj_normalized)
